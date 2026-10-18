@@ -3,6 +3,7 @@ use std::{
     fmt::Display,
     fs::{self, File},
     io,
+    process::exit,
 };
 
 use minecraft_uuid::get_username_by_uuid;
@@ -11,6 +12,10 @@ use serde_json::Value;
 #[tokio::main]
 async fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
+
+    if args.len() < 2 {
+        help();
+    }
 
     let mut entries = fs::read_dir(&args[1])?
         .map(|res| res.map(|e| e.path()))
@@ -60,6 +65,11 @@ fn format_time_from_seconds(seconds: u64) -> String {
     let o = format!("{}h {}m {}s", hours, minutes, seconds);
 
     o
+}
+
+fn help() {
+    println!("Usage: getplaytime <server path>/world/stats/");
+    exit(1);
 }
 
 struct Player {
